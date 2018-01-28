@@ -49,7 +49,6 @@ class UsersLoginTest < ActionDispatch::IntegrationTest
     assert_empty cookies[:remember_token] # これがGREENなので，logoutではcookiesは削除ずみ
     # クッキーを削除してログイン
     log_in_as(@user, remember_me: '0')
-    debugger
     assert_empty cookies[:remember_token]
   end
 end
