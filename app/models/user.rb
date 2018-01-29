@@ -1,6 +1,6 @@
 class User < ApplicationRecord
-  attr_accessor :remember_token
-  before_save {email.downcase! }
+  attr_accessor :remember_token, :activation_token
+  before_save :downcase_email
   validates :name, presence: true, length: {maximum: 50 }
   VALID_EMAIL_REGEX = /\A[\w+\-.]+@[a-z\d\-]+(\.[a-z\d\-]+)*\.[a-z]+\z/i
   validates :email, presence: true, length: {maximum: 255 }, format: {with: VALID_EMAIL_REGEX },
@@ -34,5 +34,16 @@ class User < ApplicationRecord
 
   def forget
     update_attribute(:remember_digest, nil)
+  end
+
+  # メールアドレスをすべて小文字にする
+  def downcase_email
+    self.email.downcase!
+  end
+
+  # 有効化トークンとダイジェストを作成および代入する
+  def activation_token
+    self.activation_token = User.new_token                 # avtivation_tokenの作成
+    self.activation_digest = User.digest(activation_token) # activation_tokenをハッシュ化し，activation_digestに代入
   end
 end
